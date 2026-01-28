@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharge Top One</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: transparent;
+            border-radius: 20px;
+            box-shadow: none;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .amount-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .amount-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .amount-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .operator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .operator-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .operator-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .operator-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .operator-option.mtn.selected {
+            background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+            border-color: #ffcc00;
+        }
+
+        .operator-option.moov.selected {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            border-color: #0066cc;
+        }
+
+        .operator-option.orange.selected {
+            background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%);
+            border-color: #ff6600;
+        }
+
+        .operator-option.wave.selected {
+            background: linear-gradient(135deg, #00cc88 0%, #009966 100%);
+            border-color: #00cc88;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .custom-amount-section {
+            margin-top: 20px;
+        }
+
+        #customAmount {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .btn-continue {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-continue:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+
+            .amount-grid,
+            .operator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .amount-option {
+                font-size: 14px;
+                padding: 12px 8px;
+            }
+            
+            .operator-option {
+                font-size: 12px;
+            }
+        }
+
+        /* Styles pour le loading */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: white;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        /* Styles pour les notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #2ecc71;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error-notification {
+            background: #e74c3c;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>TOP ONE</h1>
+            <p>Recharge rapide et sécurisée</p>
+        </div>
+
+        <form id="rechargeForm">
+            <div class="section">
+                <div class="section-title">Veuillez choisir votre montant de rechargement</div>
+                <div class="amount-grid">
+                    <div class="amount-option quick-amount-btn" data-amount="6000">6000 FCFA</div>
+                    <div class="amount-option quick-amount-btn" data-amount="10000">10000 FCFA</div>
+                    <div class="amount-option quick-amount-btn" data-amount="15000">15000 FCFA</div>
+                    <div class="amount-option quick-amount-btn" data-amount="20000">20000 FCFA</div>
+                </div>
+                
+                <!-- Section montant personnalisé -->
+                <div class="custom-amount-section">
+                    <div class="section-title" style="margin-top: 20px; margin-bottom: 10px;">Ou saisissez un montant personnalisé</div>
+                    <div class="input-group">
+                        <input type="number" id="customAmount" placeholder="Entrez le montant en FCFA" min="100" step="100">
+                    </div>
+                </div>
+                
+                <span id="amountError" style="color: #e74c3c; font-size: 14px; opacity: 0; transition: opacity 0.3s;"></span>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Veuillez choisir votre opérateur de rechargement</div>
+                <div class="operator-grid">
+                    <label class="operator-option mtn">
+                        <input type="radio" name="operator" value="mtn" style="display: none;">
+                        <span class="operator-logo">MTN</span>
+                    </label>
+                    <label class="operator-option moov">
+                        <input type="radio" name="operator" value="moov" style="display: none;">
+                        <span class="operator-logo">Moov</span>
+                    </label>
+                    <label class="operator-option orange">
+                        <input type="radio" name="operator" value="orange" style="display: none;">
+                        <span class="operator-logo">Orange</span>
+                    </label>
+                    <label class="operator-option wave">
+                        <input type="radio" name="operator" value="wave" style="display: none;">
+                        <span class="operator-logo">Wave</span>
+                    </label>
+                </div>
+                <span id="operatorError" style="color: #e74c3c; font-size: 14px; opacity: 0; transition: opacity 0.3s;"></span>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Veuillez saisir votre numéro de rechargement</div>
+                <div class="input-group">
+                    <input type="tel" id="phone" placeholder="Ex: 0123456789" maxlength="10" required>
+                </div>
+                <span id="phoneError" style="color: #e74c3c; font-size: 14px; opacity: 0; transition: opacity 0.3s;"></span>
+            </div>
+
+            <!-- Input caché pour le montant -->
+            <input type="hidden" id="amount" value="0">
+
+            <button type="submit" class="btn-continue">Continuer</button>
+        </form>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Traitement en cours...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+
+    <script type="module">
+        // Import des modules Firebase nécessaires
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            get, 
+            onValue
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // 🔁 CONFIGURATION FIREBASE YTC
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+            authDomain: "ytc-t-19beb.firebaseapp.com",
+            databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+            projectId: "ytc-t-19beb",
+            storageBucket: "ytc-t-19beb.firebasestorage.app",
+            messagingSenderId: "1008752984173",
+            appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+        };
+
+        // Initialisation Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sélection des éléments
+            const form = document.getElementById('rechargeForm');
+            const phoneInput = document.getElementById('phone');
+            const amountInput = document.getElementById('amount');
+            const customAmountInput = document.getElementById('customAmount');
+            const phoneError = document.getElementById('phoneError');
+            const amountError = document.getElementById('amountError');
+            const operatorOptions = document.querySelectorAll('.operator-option');
+            const quickAmountBtns = document.querySelectorAll('.quick-amount-btn');
+            const loading = document.querySelector('.loading');
+            const notification = document.getElementById('notification');
+
+            const operatorNumbers = {
+                'mtn': '2250502714919',
+                'moov': '2250141023357',
+                'orange': 'ecriver au service client',
+                'wave': '2250769571346',
+                'usdt': 'TArN5XsrxyhtuzxwKQiWNTBsmMm9Brkim9'
+            };
+
+            // --- Fonctions utilitaires ---
+            const showLoading = () => { if (loading) loading.style.display = 'flex'; };
+            const hideLoading = () => { if (loading) loading.style.display = 'none'; };
+            const showNotification = (msg, type = 'success') => {
+                if (!notification) return;
+                notification.textContent = msg;
+                notification.className = `notification ${type}`;
+                notification.style.display = 'block';
+                setTimeout(() => notification.style.display = 'none', 5000);
+            };
+            const showError = (element, msg) => {
+                const el = document.getElementById(element);
+                if (el) {
+                    el.textContent = msg;
+                    el.style.opacity = '1';
+                }
+            };
+            const clearErrors = () => {
+                if (phoneError) { phoneError.textContent = ''; phoneError.style.opacity = '0'; }
+                if (amountError) { amountError.textContent = ''; amountError.style.opacity = '0'; }
+            };
+
+            const validateForm = (operator, phone, amount) => {
+                clearErrors();
+                let isValid = true;
+
+                if (!operator) { showError('operatorError', 'Veuillez sélectionner un opérateur'); isValid = false; }
+                if (amount < 100) { showError('amountError', 'Le montant minimum est de 100 FCFA'); isValid = false; }
+
+                return isValid;
+            };
+
+            // --- Effets et interactions pour les opérateurs ---
+            operatorOptions.forEach(option => {
+                const radioInput = option.querySelector('input[type="radio"]');
+                
+                option.addEventListener('click', function() {
+                    // Déselectionner tous les opérateurs
+                    operatorOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        const radio = opt.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = false;
+                    });
+                    
+                    // Sélectionner l'opérateur cliqué
+                    this.classList.add('selected');
+                    if (radioInput) radioInput.checked = true;
+                });
+            });
+
+            // --- Gestion des montants rapides ---
+            quickAmountBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    quickAmountBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    if (amountInput) amountInput.value = btn.getAttribute('data-amount');
+                    if (customAmountInput) customAmountInput.value = ''; // Effacer le montant personnalisé
+                });
+            });
+
+            // --- Gestion du montant personnalisé ---
+            if (customAmountInput) {
+                customAmountInput.addEventListener('input', function() {
+                    const customValue = parseInt(this.value) || 0;
+                    
+                    // Déselectionner tous les boutons de montant rapide
+                    quickAmountBtns.forEach(btn => btn.classList.remove('selected'));
+                    
+                    // Mettre à jour le montant caché
+                    if (amountInput) amountInput.value = customValue;
+                    
+                    // Validation en temps réel
+                    if (customValue > 0 && customValue < 100) {
+                        showError('amountError', 'Le montant minimum est de 100 FCFA');
+                    } else {
+                        amountError.textContent = '';
+                        amountError.style.opacity = '0';
+                    }
+                });
+            }
+
+            if (amountInput) amountInput.addEventListener('input', () => quickAmountBtns.forEach(btn => btn.classList.remove('selected')));
+
+            if (phoneInput) phoneInput.addEventListener('input', () => { 
+                phoneError.textContent = ''; 
+                phoneError.style.opacity = '0'; 
+            });
+            
+            if (amountInput) amountInput.addEventListener('input', function() {
+                const amount = parseInt(this.value) || 0;
+                if (amount < 100) showError('amountError', 'Le montant minimum est de 100 FCFA');
+                else { amountError.textContent = ''; amountError.style.opacity = '0'; }
+            });
+
+            // --- Vérification utilisateur ---
+            onAuthStateChanged(auth, (user) => {
+                if (!user) {
+                    showNotification('Veuillez vous connecter pour continuer', 'error-notification');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                }
+            });
+
+            // --- Soumission du formulaire ---
+            if (form) form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const user = auth.currentUser;
+                if (!user) { showNotification('Veuillez vous connecter pour continuer', 'error-notification'); return; }
+
+                const operator = document.querySelector('input[name="operator"]:checked')?.value;
+                const phone = phoneInput?.value;
+                
+                // Vérifier d'abord si un montant personnalisé a été saisi
+                let amount = parseInt(customAmountInput?.value) || parseInt(amountInput?.value) || 0;
+
+                if (!validateForm(operator, phone, amount)) return;
+
+                showLoading();
+
+                try {
+                    const rechargeData = {
+                        operator,
+                        phone,
+                        amount,
+                        operatorNumber: operatorNumbers[operator] || 'N/A',
+                        date: new Date().toISOString(),
+                        userId: user.uid,
+                        userEmail: user.email,
+                        status: 'pending'
+                    };
+
+                    sessionStorage.setItem('rechargeData', JSON.stringify(rechargeData));
+
+                    const rechargeRef = ref(db, `recharges/${user.uid}/${Date.now()}`);
+                    await set(rechargeRef, rechargeData);
+
+                    window.location.href = 'confirmation.html';
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    showNotification('Une erreur est survenue. Veuillez réessayer.', 'error-notification');
+                } finally {
+                    hideLoading();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

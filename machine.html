@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'Accueil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            padding-top: 0;
+        }
+
+        /* Palette de statistiques en haut */
+        .stats-banner {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 999;
+            padding: 12px 0;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .stat-box {
+            padding: 10px 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-box:first-child::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 60%;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 6px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: #667eea;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            color: rgba(102, 126, 234, 0.8);
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.4em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Cartes d'investissement */
+        .investments-section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .investment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid;
+        }
+
+        .investment-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .investment-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .investment-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .investment-daily {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .investment-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .info-item {
+            font-size: 0.9em;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 700;
+        }
+
+        .progress-section {
+            margin-bottom: 15px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .collect-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .collect-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .collect-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* Navigation en bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-label {
+            font-size: 0.75em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+ 
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Palette de statistiques en haut -->
+    <div class="stats-banner">
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                    </svg>
+                </div>
+                <div class="stat-label">Total VIP Investis</div>
+                <div class="stat-value" id="totalVipInvested">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div class="stat-label">Total Bénéfice</div>
+                <div class="stat-value" id="totalProfit">0 FCFA</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="investments-section">
+            <h2 class="section-title">Mes Investissements</h2>
+            <div id="investmentsContainer">
+                <!-- Les investissements seront insérés ici -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de navigation en bas -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="accueil.html" class="nav-button active">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-label">Accueil</span>
+            </a>
+
+            <a href="investir.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span class="nav-label">Investir</span>
+            </a>
+
+            <a href="machine.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="nav-label">VIP</span>
+            </a>
+
+            <a href="compte.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-label">Compte</span>
+            </a>
+        </div>
+    </nav>
+
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getDatabase, 
+  ref, 
+  get,
+  update,
+  push,
+  onValue,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+/* ================= FIREBASE ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+  authDomain: "ytc-t-19beb.firebaseapp.com",
+  databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+  projectId: "ytc-t-19beb",
+  storageBucket: "ytc-t-19beb.firebasestorage.app",
+  messagingSenderId: "1008752984173",
+  appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+};
+ 
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+
+        const VIP_CONFIG = {
+            1: { productId: 1, nom: "VIP 1", price: 6000, dailyRevenue: 1200, cycleDays: 15, totalRevenue: 18000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767566579-714fmrtnyel-sl1500.jpg", gradient: "linear-gradient(135deg, rgba(139,69,19,0.3), rgba(160,82,45,0.3))" },
+            2: { productId: 2, nom: "VIP 2", price: 15000, dailyRevenue: 2400, cycleDays: 15, totalRevenue: 36000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767566989-1.jpg", gradient: "linear-gradient(135deg, rgba(205,133,63,0.3), rgba(222,184,135,0.3))" },
+            3: { productId: 3, nom: "VIP 3", price: 25000, dailyRevenue: 1667, cycleDays: 18, totalRevenue: 30000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767567329-chocolat-en-poudre-avec-feves-de-cacao-nestle-324x389.jpg", gradient: "linear-gradient(135deg, rgba(210,105,30,0.3), rgba(255,140,0,0.3))" },
+            4: { productId: 4, nom: "VIP 4", price: 35000, dailyRevenue: 175, cycleDays: 20, totalRevenue: 3500, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767567532-chocolat-en-poudre-cacaote-et-malte-tonimalt-324x389.jpg", gradient: "linear-gradient(135deg, rgba(139,69,19,0.3), rgba(101,67,33,0.3))" },
+            5: { productId: 5, nom: "VIP 5", price: 55000, dailyRevenue: 212, cycleDays: 25, totalRevenue: 5300, limit: 3, image: "https://image.noelshack.com/fichiers/2026/02/1/1767567825-images-2.jpeg", gradient: "linear-gradient(135deg, rgba(160,82,45,0.3), rgba(139,69,19,0.3))" },
+            6: { productId: 6, nom: "VIP 6", price: 100000, dailyRevenue: 217, cycleDays: 30, totalRevenue: 6500, limit: 2, image: "https://image.noelshack.com/fichiers/2026/02/1/1767568039-cafe-soluble-viennois-nescafe-324x389.jpg", gradient: "linear-gradient(135deg, rgba(210,105,30,0.3), rgba(184,134,11,0.3))" },
+            7: { productId: 7, nom: "VIP 7", price: 70000, dailyRevenue: 2000, cycleDays: 35, totalRevenue: 70000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/02/1/1767568039-cafe-soluble-viennois-nescafe-324x389.jpg", gradient: "linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,193,7,0.3))" }
+        };
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('fr-FR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount) + ' FCFA';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function isReadyToCollect(investment) {
+            if (!investment.lastCollection) return true;
+            
+            const now = new Date();
+            const lastCollection = new Date(investment.lastCollection);
+            
+            return now.getDate() !== lastCollection.getDate() ||
+                   now.getMonth() !== lastCollection.getMonth() ||
+                   now.getFullYear() !== lastCollection.getFullYear();
+        }
+
+        function calculateCycleProgress(investment) {
+            const config = VIP_CONFIG[investment.productId];
+            if (!config) return { isComplete: false, progress: 0, remainingDays: 30, calculatedTotal: 0 };
+
+            const startDate = new Date(investment.startDate || investment.timestamp);
+            const today = new Date();
+            const daysPassed = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+            const remainingDays = Math.max(0, config.cycleDays - daysPassed);
+            const calculatedTotal = Math.min(daysPassed * config.dailyRevenue, config.totalRevenue);
+            const progress = Math.min((calculatedTotal / config.totalRevenue) * 100, 100);
+            const isComplete = daysPassed >= config.cycleDays;
+
+            return { isComplete, progress, remainingDays, calculatedTotal };
+        }
+
+        function renderInvestments(investments) {
+            const container = document.getElementById('investmentsContainer');
+
+            if (!investments || investments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h2>Aucun investissement</h2>
+                        <p>Commencez à investir pour voir vos VIP ici</p>
+                        <a href="investir.html" class="empty-state-btn">Investir maintenant</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = investments.map(inv => {
+                const config = VIP_CONFIG[inv.productId];
+                if (!config) return '';
+
+                const { isComplete, progress, remainingDays } = calculateCycleProgress(inv);
+                const canCollect = !isComplete && isReadyToCollect(inv);
+                const totalCollected = inv.totalCollected || 0;
+
+                const colors = {
+                    1: '#8B4513', 2: '#CD853F', 3: '#D2691E', 
+                    4: '#8B4513', 5: '#A0522D', 6: '#D2691E', 7: '#FFD700'
+                };
+
+                return `
+                <div class="investment-card" style="border-left-color: ${colors[inv.productId] || '#667eea'}">
+                    <div class="investment-header">
+                        <div class="investment-icon" style="background: ${config.gradient}; display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: 900; color: white;">${config.nom}</div>
+                        <div>
+                            <div class="investment-title">${config.nom}</div>
+                            <div class="investment-daily">${formatCurrency(config.dailyRevenue)} / jour</div>
+                        </div>
+                    </div>
+                    <div class="investment-info">
+                        <div class="info-item">
+                            <strong>📅 Début</strong>
+                            <span class="info-value">${new Date(inv.startDate || inv.timestamp).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>⏱️ Restant</strong>
+                            <span class="info-value">${remainingDays === 0 ? 'Terminé' : remainingDays + ' jours'}</span>
+                        </div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span><strong>Bénéfice récupéré</strong></span>
+                            <span>${formatCurrency(totalCollected)}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    <button class="collect-btn" onclick="collectRevenue('${inv.id}')" ${(!canCollect || isComplete) ? 'disabled' : ''}>
+                        ${isComplete ? '✅ Cycle terminé' : (canCollect ? '💰 Réclamer maintenant' : '⏳ Déjà réclamé aujourd\'hui')}
+                    </button>
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function loadInvestments() {
+            if (!currentUser) {
+                document.getElementById('investmentsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔐</div>
+                        <h2>Connexion requise</h2>
+                        <p>Connectez-vous pour voir vos investissements</p>
+                        <a href="login.html" class="empty-state-btn">Se connecter</a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const snapshot = await get(ref(db, `investments/${currentUser.uid}`));
+                const investments = [];
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const investment = { id: child.key, ...child.val() };
+                        if (investment.status === 'active') {
+                            investments.push(investment);
+                        }
+                    });
+                }
+
+                renderInvestments(investments);
+            } catch (error) {
+                console.error("Erreur:", error);
+                showNotification("❌ Erreur de chargement", "error");
+            }
+        }
+
+        window.collectRevenue = async function(investmentId) {
+            if (!currentUser) {
+                showNotification('❌ Connectez-vous', 'error');
+                return;
+            }
+
+            try {
+                const investmentRef = ref(db, `investments/${currentUser.uid}/${investmentId}`);
+                const userRef = ref(db, `users/${currentUser.uid}`);
+                
+                const [invSnap, userSnap] = await Promise.all([
+                    get(investmentRef), 
+                    get(userRef)
+                ]);
+                
+                if (!invSnap.exists()) throw new Error("Investissement introuvable");
+
+                const investment = invSnap.val();
+                const userBalance = parseFloat(userSnap.val()?.balance || 0);
+                const config = VIP_CONFIG[investment.productId];
+                
+                if (!config) throw new Error("Configuration manquante");
+                if (investment.totalCollected >= config.totalRevenue) throw new Error("Cycle terminé");
+                if (!isReadyToCollect(investment)) throw new Error("Déjà collecté aujourd'hui");
+
+                const newTotal = (investment.totalCollected || 0) + config.dailyRevenue;
+                
+                const updates = {
+                    [`users/${currentUser.uid}/balance`]: userBalance + config.dailyRevenue,
+                    [`investments/${currentUser.uid}/${investmentId}/totalCollected`]: newTotal,
+                    [`investments/${currentUser.uid}/${investmentId}/lastCollection`]: Date.now()
+                };
+
+                await update(ref(db), updates);
+                showNotification(`✅ ${formatCurrency(config.dailyRevenue)} collectés !`, "success");
+                loadInvestments();
+                updateTopStats();
+            } catch (error) {
+                console.error("Erreur:", error);
+                showNotification(error.message || "❌ Erreur", "error");
+            }
+        };
+
+        async function updateTopStats() {
+            console.log("updateTopStats appelée, currentUser:", currentUser);
+            
+            if (!currentUser) {
+                console.log("Pas d'utilisateur connecté");
+                document.getElementById('totalVipInvested').textContent = '0';
+                document.getElementById('totalProfit').textContent = '0 FCFA';
+                return;
+            }
+
+            try {
+                const snapshot = await get(ref(db, `investments/${currentUser.uid}`));
+                console.log("Snapshot exists:", snapshot.exists());
+                
+                let totalVipCount = 0;
+                let totalProfit = 0;
+
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const investment = child.val();
+                        console.log("Investment trouvé:", investment);
+                        
+                        if (investment.status === 'active') {
+                            totalVipCount++;
+                            
+                            let profit = 0;
+                            if (investment.totalCollected && investment.totalCollected > 0) {
+                                profit = investment.totalCollected;
+                                console.log("Utilisation de totalCollected:", profit);
+                            } else {
+                                const { calculatedTotal } = calculateCycleProgress(investment);
+                                profit = calculatedTotal;
+                                console.log("Calcul du bénéfice:", profit);
+                            }
+                            
+                            totalProfit += profit;
+                        }
+                    });
+                }
+
+                console.log("Total VIP:", totalVipCount, "Total Profit:", totalProfit);
+                document.getElementById('totalVipInvested').textContent = totalVipCount;
+                document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+            } catch (error) {
+                console.error("Erreur lors du chargement des stats:", error);
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                updateTopStats();
+                loadInvestments();
+                onValue(ref(db, `investments/${user.uid}`), () => {
+                    updateTopStats();
+                    loadInvestments();
+                });
+            } else {
+                document.getElementById('totalVipInvested').textContent = '0';
+                document.getElementById('totalProfit').textContent = '0 FCFA';
+                loadInvestments();
+            }
+        });
+
+        window.navigateTo = function(page) {
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            const pages = {
+                'accueil': 'accueil.html',
+                'investir': 'investir.html',
+                'vip': 'vip.html',
+                'compte': 'compte.html'
+            };
+            
+            if (pages[page]) {
+                if (page === 'accueil') {
+                    window.location.reload();
+                } else {
+                    window.location.href = pages[page];
+                }
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'Accueil - YTC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            padding-top: 110px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        /* Boutons d'action */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            border: none;
+            color: #333;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            text-decoration: none;
+            text-align: left;
+            position: relative;
+        }
+
+        .action-btn:hover {
+            background: #f8f9ff;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.12);
+        }
+
+        .action-btn:active {
+            transform: translateX(3px);
+        }
+
+        .action-icon {
+            width: 22px;
+            height: 22px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: currentColor;
+            flex-shrink: 0;
+            background: #667eea;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .action-label {
+            flex: 1;
+            font-size: 0.9em;
+            letter-spacing: 0.2px;
+        }
+
+        /* Flèche à droite */
+        .action-btn::after {
+            content: '›';
+            font-size: 1.5em;
+            color: #ccc;
+            font-weight: 300;
+        }
+
+        /* Boutons spéciaux en haut */
+        .top-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+        .top-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .top-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        .recharge-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .retrait-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .top-btn-icon {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .logout-btn {
+            color: #f44336;
+        }
+
+        .logout-btn .action-icon {
+            background: #f44336;
+            stroke: white;
+        }
+
+        /* Palette de solde en haut */
+        .balance-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientWave 8s ease infinite;
+            padding: 12px 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            border-bottom: 3px solid rgba(255, 215, 0, 0.5);
+            z-index: 999;
+        }
+
+        @keyframes gradientWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 50% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            75% {
+                background-position: 50% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .balance-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Profil utilisateur à gauche */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-avatar {
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-icon {
+            width: 22px;
+            height: 22px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-label {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 0.9em;
+            color: white;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* Section centrale - Soldes */
+        .balance-section {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .balance-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            min-width: 120px;
+        }
+
+        .balance-label {
+            font-size: 0.65em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .balance-amount {
+            font-size: 0.95em;
+            color: #ffd700;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Icône VIP à droite */
+        .vip-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 193, 7, 0.3));
+            padding: 6px 12px;
+            border-radius: 18px;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .vip-icon {
+            width: 20px;
+            height: 20px;
+            fill: #ffd700;
+            filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
+        }
+
+        .vip-text {
+            font-size: 0.75em;
+            color: #ffd700;
+            font-weight: 800;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.8px;
+        }
+
+        /* Navigation en bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-label {
+            font-size: 0.75em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .balance-content {
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .balance-section {
+                width: 100%;
+                order: 3;
+                margin-top: 10px;
+            }
+
+            .balance-item {
+                min-width: 120px;
+                padding: 8px 15px;
+            }
+
+            .vip-text {
+                display: none;
+            }
+
+            .user-label {
+                font-size: 0.65em;
+            }
+
+            .user-id {
+                font-size: 0.8em;
+            }
+
+            .action-btn {
+                padding: 15px 18px;
+            }
+
+            .action-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            .action-label {
+                font-size: 0.9em;
+            }
+
+            .top-btn {
+                padding: 16px 18px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Palette de solde en haut -->
+    <header class="balance-header">
+        <div class="balance-content">
+            <!-- Profil utilisateur -->
+            <div class="user-profile">
+                <div class="profile-avatar">
+                    <svg class="profile-icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="user-info">
+                    <span class="user-label">Identifiant</span>
+                    <span class="user-id" id="user-id">xxxxxx</span>
+                </div>
+            </div>
+
+            <!-- Soldes -->
+            <div class="balance-section">
+                <div class="balance-item">
+                    <span class="balance-label">Solde</span>
+                    <span class="balance-amount" id="main-balance">0 FCFA</span>
+                </div>
+                <div class="balance-item">
+                    <span class="balance-label">Bénéfice Total</span>
+                    <span class="balance-amount" id="total-revenue">0 FCFA</span>
+                </div>
+            </div>
+
+            <!-- Badge VIP -->
+            <div class="vip-badge">
+                <svg class="vip-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="vip-text">VIP</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Boutons principaux Recharge et Retrait -->
+        <div class="top-buttons">
+            <a href="recharge.html" class="top-btn recharge-btn">
+                <svg class="top-btn-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Recharge
+            </a>
+
+            <a href="retrait.html" class="top-btn retrait-btn">
+                <svg class="top-btn-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Retrait
+            </a>
+        </div>
+
+        <!-- Autres boutons en liste -->
+        <div class="action-buttons">
+            <a href="historique.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="action-label">Historique de recharge</span>
+            </a>
+
+            <a href="historique-retrait.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="action-label">Historique de retrait</span>
+            </a>
+
+            <a href="service-client.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="action-label">Service client</span>
+            </a>
+
+            <a href="equipe.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="action-label">Parrainage</span>
+            </a>
+
+            <a href="portefeuille.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                    <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
+                </svg>
+                <span class="action-label">Portefeuille</span>
+            </a>
+
+            <a href="carte.html" class="action-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span class="action-label">Veuillez vérifier votre compte lié</span>
+            </a>
+
+            <button id="logout-btn" class="action-btn logout-btn">
+                <svg class="action-icon" viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span class="action-label">Déconnexion</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Barre de navigation en bas -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="accueil.html" class="nav-button active">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-label">Accueil</span>
+            </a>
+
+            <a href="investir.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span class="nav-label">Investir</span>
+            </a>
+
+            <a href="machine.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="nav-label">VIP</span>
+            </a>
+
+            <a href="compte.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-label">Compte</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        function navigateTo(page) {
+            console.log('Navigation vers:', page);
+        }
+    </script>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { 
+        getAuth, 
+        createUserWithEmailAndPassword, 
+        signInWithEmailAndPassword, 
+        onAuthStateChanged, 
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+    import { 
+        getDatabase, 
+        ref, 
+        set, 
+        get, 
+        onValue
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+    // 🔁 CONFIGURATION FIREBASE YTC
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+        authDomain: "ytc-t-19beb.firebaseapp.com",
+        databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+        projectId: "ytc-t-19beb",
+        storageBucket: "ytc-t-19beb.firebasestorage.app",
+        messagingSenderId: "1008752984173",
+        appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    let currentUser = null;
+
+    class Utils {
+        static generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            return Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+        }
+
+        static async checkReferralCode(code) {
+            if (!code) return null;
+            const snapshot = await get(ref(db, 'users'));
+            if (snapshot.exists()) {
+                const users = snapshot.val();
+                for (const userId in users) {
+                    if (users[userId].referralCode === code) {
+                        return { userId, username: users[userId].username };
+                    }
+                }
+            }
+            return null;
+        }
+
+        static showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.textContent = message;
+                el.style.display = message ? 'block' : 'none';
+            }
+        }
+
+        static showSuccess(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.textContent = message;
+                el.style.display = message ? 'block' : 'none';
+            }
+        }
+
+        static clearMessages() {
+            ['loginError', 'signupError', 'signupSuccess', 'referralStatus'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                    el.className = el.className.replace(/(valid|invalid)/g, '').trim();
+                }
+            });
+        }
+
+        static updateReferralStatus(isValid, message) {
+            const el = document.getElementById('referralStatus');
+            if (el) {
+                el.textContent = message;
+                el.className = `referral-status ${isValid ? 'valid' : 'invalid'}`;
+                el.style.display = message ? 'block' : 'none';
+            }
+        }
+
+        static updateUserDisplay(userData) {
+            const nameEl = document.getElementById('user-name');
+            if (nameEl && userData?.username) nameEl.textContent = `${userData.username}`;
+
+            const idEl = document.getElementById('user-id');
+            if (idEl && userData?.phoneNumber) idEl.textContent = userData.phoneNumber;
+
+            const emailEl = document.getElementById('user-email');
+            if (emailEl && userData?.phoneNumber) emailEl.textContent = `${userData.phoneNumber}@temp.com`;
+        }
+
+        static formatCurrency(amountFCFA) {
+            return Math.round(amountFCFA).toLocaleString() + ' FCFA';
+        }
+
+        static updateBalanceDisplay(elementId, amountFCFA) {
+            const el = document.getElementById(elementId);
+            if (el && amountFCFA !== undefined) {
+                el.textContent = this.formatCurrency(amountFCFA);
+            }
+        }
+    }
+
+    class FormManager {
+        static async handleSignup(event) {
+            event.preventDefault();
+            Utils.clearMessages();
+
+            try {
+                const username = document.getElementById("signupUsername").value.trim();
+                const telephone = document.getElementById("signupTelephone").value.trim();
+                const password = document.getElementById("signupPassword").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
+                const referralCode = document.getElementById("referralCode")?.value.trim();
+
+                if (!username || !telephone || !password) throw new Error("Veuillez remplir tous les champs requis");
+                if (password !== confirmPassword) throw new Error("Les mots de passe ne correspondent pas");
+                if (password.length < 6) throw new Error("Le mot de passe doit contenir au moins 6 caractères");
+                if (telephone.length < 8) throw new Error("Numéro de téléphone invalide");
+
+                let referrerData = null;
+                if (referralCode) {
+                    referrerData = await Utils.checkReferralCode(referralCode);
+                    if (!referrerData) throw new Error("Code de parrainage invalide");
+                }
+
+                const email = `${telephone}@temp.com`;
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const newReferralCode = Utils.generateReferralCode();
+
+                await set(ref(db, `users/${user.uid}`), {
+                    username,
+                    email,
+                    phoneNumber: telephone,
+                    balance: 0,
+                    referralCode: newReferralCode,
+                    referredBy: referrerData?.userId || null,
+                    createdAt: Date.now()
+                });
+
+                if (referrerData?.userId) {
+                    const referrerRef = ref(db, `users/${referrerData.userId}/balance`);
+                    const currentBalanceSnap = await get(referrerRef);
+                    const currentBalance = currentBalanceSnap.exists() ? currentBalanceSnap.val() : 0;
+                    await set(referrerRef, currentBalance + 10);
+                }
+
+                Utils.showSuccess("signupSuccess", "Compte créé avec succès ! Redirection...");
+                setTimeout(() => window.location.href = "accueil.html", 1500);
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                Utils.showError("signupError", error.message);
+            }
+        }
+
+        static async handleLogin(event) {
+            event.preventDefault();
+            Utils.clearMessages();
+
+            try {
+                const telephone = document.getElementById("loginTelephone").value.trim();
+                const password = document.getElementById("loginPassword").value;
+
+                if (!telephone || !password) throw new Error("Veuillez remplir tous les champs");
+
+                const email = `${telephone}@temp.com`;
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = "accueil.html";
+
+            } catch (error) {
+                console.error("Erreur de connexion:", error);
+                Utils.showError("loginError", "Numéro ou mot de passe incorrect");
+            }
+        }
+
+        static async handleReferralCodeInput() {
+            const referralInput = document.getElementById('referralCode');
+            const code = referralInput.value.trim().toUpperCase();
+
+            if (!code) {
+                Utils.updateReferralStatus(true, '');
+                return;
+            }
+
+            try {
+                const referrerData = await Utils.checkReferralCode(code);
+                if (referrerData) {
+                    Utils.updateReferralStatus(true, `Code valide ! Parrain: ${referrerData.username}`);
+                } else {
+                    Utils.updateReferralStatus(false, 'Code de parrainage invalide');
+                }
+            } catch {
+                Utils.updateReferralStatus(false, 'Erreur de vérification du code');
+            }
+        }
+
+        static handleReferralCodeFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const referralCode = urlParams.get('ref');
+            const referralInput = document.getElementById('referralCode');
+            if (referralInput && referralCode) {
+                referralInput.value = referralCode.toUpperCase();
+                FormManager.handleReferralCodeInput();
+            }
+        }
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    }
+
+    async function calculateRecharges(userId) {
+        try {
+            const snapshot = await get(ref(db, 'transactions'));
+            if (!snapshot.exists()) return { total: 0, count: 0 };
+
+            let totalAmount = 0, count = 0;
+            snapshot.forEach(child => {
+                const t = child.val();
+                if (t.userId === userId && t.status === 'success') {
+                    totalAmount += parseFloat(t.amount) || 0;
+                    count++;
+                }
+            });
+            return { total: totalAmount, count };
+        } catch (error) {
+            console.error("Erreur recharges:", error);
+            return { total: 0, count: 0 };
+        }
+    }
+
+    function calculateTotalVIPRevenue(userId) {
+        const invRef = ref(db, `investments/${userId}`);
+        onValue(invRef, snapshot => {
+            const investments = snapshot.val();
+            let totalRevenue = 0;
+            if (investments) {
+                Object.values(investments).forEach(inv => {
+                    if (inv.status === 'active' && inv.totalCollected) totalRevenue += inv.totalCollected;
+                });
+            }
+            Utils.updateBalanceDisplay('total-revenue', totalRevenue);
+        });
+    }
+
+    function calculateTotalWithdrawals(userId) {
+        const refW = ref(db, `users/${userId}/withdrawalHistory`);
+        onValue(refW, snapshot => {
+            const history = snapshot.val();
+            let total = 0;
+            let count = 0;
+            if (history) {
+                const arr = Object.values(history);
+                total = arr.reduce((sum, w) => sum + (w.amount || 0), 0);
+                count = arr.length;
+            }
+            Utils.updateBalanceDisplay('total-withdrawals', total);
+            
+            const countEl = document.getElementById('withdrawal-count');
+            if (countEl) countEl.textContent = `${count} retrait${count === 1 ? '' : 's'}`;
+        });
+    }
+
+    async function updateAllStats(userId) {
+        const recharges = await calculateRecharges(userId);
+        Utils.updateBalanceDisplay('total-recharge', recharges.total);
+        
+        const countEl = document.getElementById('recharge-count');
+        if(countEl) countEl.textContent = `${recharges.count} recharge${recharges.count === 1 ? '' : 's'}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const signupForm = document.getElementById("signupFormData");
+        const loginForm = document.getElementById("loginFormData");
+        const referralInput = document.getElementById("referralCode");
+
+        if (signupForm) signupForm.addEventListener("submit", FormManager.handleSignup);
+        if (loginForm) loginForm.addEventListener("submit", FormManager.handleLogin);
+        if (referralInput) referralInput.addEventListener("input", debounce(FormManager.handleReferralCodeInput, 500));
+
+        FormManager.handleReferralCodeFromURL();
+
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                const page = this.dataset.page;
+                console.log('Navigation vers:', page);
+            });
+        });
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Erreur déconnexion:', error);
+                }
+            });
+        }
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+        if(user){
+            currentUser = user;
+            const userRef = ref(db, `users/${user.uid}`);
+            onValue(userRef, snapshot => {
+                const data = snapshot.val();
+                Utils.updateUserDisplay(data);
+                Utils.updateBalanceDisplay('main-balance', data?.balance || 0);
+            });
+
+            calculateTotalVIPRevenue(user.uid);
+            calculateTotalWithdrawals(user.uid);
+            await updateAllStats(user.uid);
+        } else {
+            currentUser = null;
+            Utils.updateUserDisplay(null);
+            
+            ['main-balance', 'total-recharge', 'total-withdrawals', 'total-revenue'].forEach(id => {
+                Utils.updateBalanceDisplay(id, 0);
+            });
+            
+            const rechargeCountEl = document.getElementById('recharge-count');
+            const withdrawalCountEl = document.getElementById('withdrawal-count');
+            if (rechargeCountEl) rechargeCountEl.textContent = '0 recharge';
+            if (withdrawalCountEl) withdrawalCountEl.textContent = '0 retrait';
+
+            // Optionnel : redirection vers login si non connecté
+            // setTimeout(() => {
+            //     if (window.location.pathname.includes('accueil')) {
+            //         window.location.href = 'login.html';
+            //     }
+            // }, 1000);
+        }
+    });
+    </script>
+</body>
+</html>

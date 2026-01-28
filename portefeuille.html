@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration de Retrait</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --accent-blue: #00d9ff;
+            --accent-purple: #b537f2;
+            --success: #00ff9f;
+            --warning: #ffd60a;
+            --error: #ff006e;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a6e;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .field-input::placeholder {
+            color: #aaa;
+        }
+
+        /* Operator Selector */
+        .operator-selector {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-primary);
+        }
+
+        .operator-selector:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .operator-selector .selected-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .operator-selector .arrow {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 32px;
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 217, 255, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Messages */
+        #message {
+            margin-top: 20px;
+        }
+
+        .message-success,
+        .message-error {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .message-success {
+            background: rgba(0, 255, 159, 0.1);
+            color: var(--success);
+            border: 2px solid rgba(0, 255, 159, 0.3);
+        }
+
+        .message-error {
+            background: rgba(255, 0, 110, 0.1);
+            color: var(--error);
+            border: 2px solid rgba(255, 0, 110, 0.3);
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Bottom Sheet */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 24px 24px 0 0;
+            padding: 32px 24px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .bottom-sheet-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .bottom-sheet-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .operators-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .operator {
+            padding: 18px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-primary);
+        }
+
+        .operator:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .operator.selected {
+            border-color: var(--accent-blue);
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .operator-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .operator-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .bottom-sheet-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            .header-title {
+                font-size: 1.75rem;
+            }
+
+            .bottom-sheet {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">💳</div>
+            <h1 class="header-title">Configuration de Retrait</h1>
+            <p class="header-subtitle">Configurez vos informations de retrait</p>
+        </div>
+
+        <form id="withdrawalForm">
+            <div class="form-group">
+                <label class="form-label">Nom du propriétaire</label>
+                <input type="text" id="ownerName" class="field-input" placeholder="Entrez votre nom complet">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Numéro de compte</label>
+                <input type="tel" id="phone" class="field-input" placeholder="+243 XX XXX XXXX">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Opérateur</label>
+                <div id="operatorSelector" class="operator-selector">
+                    <span class="selected-text" id="selectedType">MTN</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <input type="hidden" id="operator" value="MTN">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Code de retrait (6 chiffres)</label>
+                <input type="text" id="code" class="field-input" placeholder="000000" maxlength="6">
+            </div>
+
+            <button type="button" id="submitBtn" class="submit-btn">
+                Enregistrer la configuration
+            </button>
+
+            <div id="message"></div>
+        </form>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Bottom Sheet -->
+    <div id="bottomSheet" class="bottom-sheet">
+        <div class="bottom-sheet-header">
+            <h2 class="bottom-sheet-title">Choisir un opérateur</h2>
+            <p class="bottom-sheet-subtitle">Sélectionnez votre opérateur mobile</p>
+        </div>
+
+        <div class="operators-list">
+            <div class="operator" data-operator="MTN">
+                <div class="operator-icon">📱</div>
+                <span class="operator-name">MTN</span>
+            </div>
+            <div class="operator" data-operator="Orange">
+                <div class="operator-icon">🍊</div>
+                <span class="operator-name">Orange</span>
+            </div>
+            <div class="operator" data-operator="Airtel">
+                <div class="operator-icon">📞</div>
+                <span class="operator-name">Airtel</span>
+            </div>
+            <div class="operator" data-operator="Moov">
+                <div class="operator-icon">📲</div>
+                <span class="operator-name">Moov</span>
+            </div>
+            <div class="operator" data-operator="Wave">
+                <div class="operator-icon">🌊</div>
+                <span class="operator-name">Wave</span>
+            </div>
+        </div>
+
+        <div class="bottom-sheet-actions">
+            <button id="cancelBtn" class="btn btn-cancel">Annuler</button>
+            <button id="confirmBtn" class="btn btn-confirm">Confirmer</button>
+        </div>
+    </div>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getDatabase, 
+  ref, 
+  set, 
+  get,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+// 🔁 CONFIGURATION FIREBASE YTC
+const firebaseConfig = {
+  apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+  authDomain: "ytc-t-19beb.firebaseapp.com",
+  databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+  projectId: "ytc-t-19beb",
+  storageBucket: "ytc-t-19beb.firebasestorage.app",
+  messagingSenderId: "1008752984173",
+  appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+};
+
+// --- Initialisation Firebase ---
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// --- Éléments DOM ---
+const operatorSelector = document.getElementById('operatorSelector');
+const bottomSheet = document.getElementById('bottomSheet');
+const overlay = document.getElementById('overlay');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+const submitBtn = document.getElementById('submitBtn');
+const options = document.querySelectorAll('.operator');
+const selectedTypeDisplay = document.getElementById('selectedType');
+const operatorInput = document.getElementById('operator');
+
+let currentSelection = 'MTN';
+let tempSelection = 'MTN';
+
+// --- Fonctions Bottom Sheet ---
+function openBottomSheet() {
+    bottomSheet.classList.add('active');
+    overlay.classList.add('active');
+    tempSelection = currentSelection;
+
+    options.forEach(option => {
+        option.classList.toggle('selected', option.dataset.operator === tempSelection);
+    });
+}
+
+function closeBottomSheet() {
+    bottomSheet.classList.remove('active');
+    overlay.classList.remove('active');
+    tempSelection = currentSelection;
+}
+
+function confirmSelection() {
+    currentSelection = tempSelection;
+    selectedTypeDisplay.textContent = currentSelection;
+    operatorInput.value = currentSelection;
+    closeBottomSheet();
+}
+
+// --- Gestion des événements Bottom Sheet ---
+operatorSelector.addEventListener('click', openBottomSheet);
+overlay.addEventListener('click', closeBottomSheet);
+cancelBtn.addEventListener('click', closeBottomSheet);
+confirmBtn.addEventListener('click', confirmSelection);
+
+options.forEach(option => {
+    option.addEventListener('click', () => {
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        tempSelection = option.dataset.operator;
+    });
+});
+
+// --- Affichage des messages ---
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.innerHTML = `
+        <div class="message-${type} animate__animated animate__fadeIn">
+            ${text}
+        </div>
+    `;
+
+    setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
+}
+
+// --- Validation du formulaire ---
+function validateForm() {
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const code = document.getElementById('code').value.trim();
+
+    if (!ownerName) { showMessage('Le nom du propriétaire est requis', 'error'); return false; }
+    if (!phone) { showMessage('Le numéro de compte est requis', 'error'); return false; }
+    if (!phone.startsWith('+')) { showMessage('Le numéro doit inclure l\'indicatif du pays (ex: +243)', 'error'); return false; }
+    if (!code) { showMessage('Le code de retrait est requis', 'error'); return false; }
+    if (code.length !== 6) { showMessage('Le code de retrait doit contenir exactement 6 chiffres', 'error'); return false; }
+    if (!/^\d+$/.test(code)) { showMessage('Le code de retrait doit contenir uniquement des chiffres', 'error'); return false; }
+
+    return true;
+}
+
+// --- Enregistrement de la configuration de retrait ---
+async function setupWithdrawal() {
+    if (!validateForm()) return;
+
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const code = document.getElementById('code').value.trim();
+    const operator = operatorInput.value;
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            showMessage('Vous devez être connecté pour effectuer cette opération', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enregistrement en cours...';
+
+        await set(ref(db, `users/${user.uid}/withdrawalConfig`), {
+            ownerName,
+            phone,
+            operator,
+            code,
+            configuredAt: Date.now(),
+            lastUpdated: new Date().toISOString()
+        });
+
+        showMessage('Configuration enregistrée avec succès !', 'success');
+        setTimeout(() => window.location.href = 'carte.html', 2000);
+
+    } catch (error) {
+        console.error('Erreur lors de l\'enregistrement:', error);
+        showMessage(`Erreur: ${error.message}`, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enregistrer la configuration';
+    }
+}
+
+// --- Charger les données existantes ---
+function loadExistingData() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const configRef = ref(db, `users/${user.uid}/withdrawalConfig`);
+    onValue(configRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('ownerName').value = data.ownerName || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('code').value = data.code || '';
+            currentSelection = data.operator || 'MTN';
+            selectedTypeDisplay.textContent = currentSelection;
+            operatorInput.value = currentSelection;
+        }
+    });
+}
+
+// --- Écoute de l'état de l'utilisateur ---
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    loadExistingData();
+});
+
+// --- Événements du formulaire ---
+submitBtn.addEventListener('click', setupWithdrawal);
+
+document.querySelectorAll('.field-input').forEach(input => {
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') setupWithdrawal();
+    });
+});
+</script>
+</body>
+</html>

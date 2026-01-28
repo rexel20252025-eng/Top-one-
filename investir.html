@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niveaux VIP - YTC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            padding-top: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* Grille des produits VIP */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            font-weight: 900;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: translate(-30%, -30%); }
+            50% { transform: translate(30%, 30%); }
+        }
+
+        .vip-badge {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-title {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+            background-clip: text;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .product-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .product-info {
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .value {
+            color: #333;
+            font-weight: 700;
+        }
+
+        .value.green {
+            color: #10b981;
+        }
+
+        .info-row.total {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .info-row.total .value {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-buy:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-info {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #e5e7eb;
+            color: #666;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Notification */
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            display: none;
+        }
+
+        /* Navigation en bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-label {
+            font-size: 0.75em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="notification"></div>
+
+    <div class="container">
+        <p class="page-subtitle">Investissez et gagnez des revenus quotidiens</p>
+        
+        <div id="productsContainer" class="products-grid">
+            <!-- Les produits VIP seront insérés ici par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Confirmer l'investissement</h2>
+            <div class="modal-info">
+                <div class="info-row">
+                    <span class="label">Niveau:</span>
+                    <span class="value" id="modalVipBadge"></span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Coût:</span>
+                    <span class="value" id="modalAmount"></span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Revenu quotidien:</span>
+                    <span class="value green" id="modalDaily"></span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Durée du cycle:</span>
+                    <span class="value" id="modalCycle"></span>
+                </div>
+                <div class="info-row total">
+                    <span class="label">Revenu total:</span>
+                    <span class="value" id="modalTotal"></span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="btnCancel">Annuler</button>
+                <button class="modal-btn confirm" id="confirmBtn">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de navigation en bas -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="accueil.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-label">Accueil</span>
+            </a>
+
+            <a href="investir.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span class="nav-label">Investir</span>
+            </a>
+
+            <a href="machine.html" class="nav-button active">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="nav-label">VIP</span>
+            </a>
+
+            <a href="compte.html" class="nav-button">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-label">Compte</span>
+            </a>
+        </div>
+    </nav>
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getDatabase, 
+  ref, 
+  get,
+  update,
+  push,
+  onValue,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+/* ================= FIREBASE ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+  authDomain: "ytc-t-19beb.firebaseapp.com",
+  databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+  projectId: "ytc-t-19beb",
+  storageBucket: "ytc-t-19beb.firebasestorage.app",
+  messagingSenderId: "1008752984173",
+  appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser = null;
+let currentSolde = 0;
+let currentProduct = null;
+
+/* ================= PRODUITS ================= */
+const PRODUCT_CONFIG = {
+  1: { productId: 1, nom: "VIP 1", price: 6000, dailyRevenue: 1200, cycleDuration: 15, totalRevenue: 18000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767566579-714fmrtnyel-sl1500.jpg", gradient: "linear-gradient(135deg, rgba(139,69,19,0.3), rgba(160,82,45,0.3))" },
+  2: { productId: 2, nom: "VIP 2", price: 15000, dailyRevenue: 2400, cycleDuration: 15, totalRevenue: 36000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767566989-1.jpg", gradient: "linear-gradient(135deg, rgba(205,133,63,0.3), rgba(222,184,135,0.3))" },
+  3: { productId: 3, nom: "VIP 3", price: 25000, dailyRevenue: 1667, cycleDuration: 18, totalRevenue: 30000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767567329-chocolat-en-poudre-avec-feves-de-cacao-nestle-324x389.jpg", gradient: "linear-gradient(135deg, rgba(210,105,30,0.3), rgba(255,140,0,0.3))" },
+  4: { productId: 4, nom: "VIP 4", price: 35000, dailyRevenue: 175, cycleDuration: 20, totalRevenue: 3500, limit: 1, image: "https://image.noelshack.com/fichiers/2026/01/7/1767567532-chocolat-en-poudre-cacaote-et-malte-tonimalt-324x389.jpg", gradient: "linear-gradient(135deg, rgba(139,69,19,0.3), rgba(101,67,33,0.3))" },
+  5: { productId: 5, nom: "VIP 5", price: 55000, dailyRevenue: 212, cycleDuration: 25, totalRevenue: 5300, limit: 3, image: "https://image.noelshack.com/fichiers/2026/02/1/1767567825-images-2.jpeg", gradient: "linear-gradient(135deg, rgba(160,82,45,0.3), rgba(139,69,19,0.3))" },
+  6: { productId: 6, nom: "VIP 6", price: 100000, dailyRevenue: 217, cycleDuration: 30, totalRevenue: 6500, limit: 2, image: "https://image.noelshack.com/fichiers/2026/02/1/1767568039-cafe-soluble-viennois-nescafe-324x389.jpg", gradient: "linear-gradient(135deg, rgba(210,105,30,0.3), rgba(184,134,11,0.3))" },
+  7: { productId: 7, nom: "VIP 7", price: 70000, dailyRevenue: 2000, cycleDuration: 35, totalRevenue: 70000, limit: 1, image: "https://image.noelshack.com/fichiers/2026/02/1/1767568039-cafe-soluble-viennois-nescafe-324x389.jpg", gradient: "linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,193,7,0.3))" }
+};
+
+/* ================= UTILITAIRES ================= */
+const formatCurrency = n => Number(n).toLocaleString("fr-FR") + " FCFA";
+
+function showNotification(message, type = "success") {
+    const n = document.getElementById("notification");
+    n.textContent = message;
+    n.style.background = type === "success" ? "#10b981" : "#ef4444";
+    n.style.display = "block";
+    setTimeout(() => n.style.display = "none", 4000);
+}
+
+function setupBalanceListener(uid) {
+    onValue(ref(db, `users/${uid}/balance`), snap => {
+        currentSolde = Number(snap.val() || 0);
+    });
+}
+
+async function checkActiveInvestments(uid, productId) {
+    const snap = await get(ref(db, `investments/${uid}`));
+    if (!snap.exists()) return 0;
+    let count = 0;
+    Object.values(snap.val()).forEach(inv => {
+        if (inv.productId === productId && inv.status === "active" && inv.remainingDays > 0) count++;
+    });
+    return count;
+}
+
+function openModal(productId) {
+    currentProduct = PRODUCT_CONFIG[productId];
+    document.getElementById("modalVipBadge").textContent = currentProduct.nom;
+    document.getElementById("modalAmount").textContent = formatCurrency(currentProduct.price);
+    document.getElementById("modalDaily").textContent = formatCurrency(currentProduct.dailyRevenue);
+    document.getElementById("modalCycle").textContent = currentProduct.cycleDuration + " jours";
+    document.getElementById("modalTotal").textContent = formatCurrency(currentProduct.totalRevenue);
+    document.getElementById("modal").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.remove("active");
+    currentProduct = null;
+}
+
+function investProduct(productId) {
+    if (!currentUser) {
+        showNotification("Veuillez vous connecter", "error");
+        return;
+    }
+    const product = PRODUCT_CONFIG[productId];
+    if (currentSolde < product.price) {
+        showNotification("Solde insuffisant", "error");
+        return;
+    }
+    openModal(productId);
+}
+
+async function confirmInvestment() {
+    if (!currentUser || !currentProduct) return;
+    const btn = document.getElementById("confirmBtn");
+    btn.disabled = true;
+
+    try {
+        const active = await checkActiveInvestments(currentUser.uid, currentProduct.productId);
+        if (active >= currentProduct.limit) {
+            showNotification("Limite atteinte", "error");
+            closeModal();
+            return;
+        }
+
+        const newBalance = currentSolde - currentProduct.price;
+        const now = new Date();
+        const updates = {};
+        updates[`users/${currentUser.uid}/balance`] = newBalance;
+
+        const invRef = push(ref(db, `investments/${currentUser.uid}`));
+        updates[`investments/${currentUser.uid}/${invRef.key}`] = {
+            productId: currentProduct.productId,
+            productName: currentProduct.nom,
+            amount: currentProduct.price,
+            dailyRevenue: currentProduct.dailyRevenue,
+            totalRevenue: currentProduct.totalRevenue,
+            remainingDays: currentProduct.cycleDuration,
+            startDate: now.toISOString(),
+            status: "active",
+            totalCollected: 0,
+            lastCollection: now.toISOString(),
+            timestamp: serverTimestamp()
+        };
+
+        await update(ref(db), updates);
+        showNotification("Investissement activé avec succès");
+        closeModal();
+        setTimeout(() => location.href = "machine.html", 2000);
+    } catch (e) {
+        console.error(e);
+        showNotification("Erreur serveur", "error");
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+/* ================= AFFICHAGE DES PRODUITS ================= */
+function renderProducts() {
+    const container = document.getElementById("productsContainer");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const vipColors = {
+        1: "linear-gradient(135deg, #8B4513 0%, #A0522D 100%)",
+        2: "linear-gradient(135deg, #CD853F 0%, #DEB887 100%)",
+        3: "linear-gradient(135deg, #D2691E 0%, #FF8C00 100%)",
+        4: "linear-gradient(135deg, #8B4513 0%, #654321 100%)",
+        5: "linear-gradient(135deg, #A0522D 0%, #8B4513 100%)",
+        6: "linear-gradient(135deg, #D2691E 0%, #B8860B 100%)",
+        7: "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"
+    };
+
+    for (const id in PRODUCT_CONFIG) {
+        const product = PRODUCT_CONFIG[id];
+
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        card.innerHTML = `
+            <div class="product-image" style="background:${vipColors[id]}">
+                <span class="vip-badge">${product.nom}</span>
+            </div>
+
+            <h3 class="product-name">${product.nom}</h3>
+
+            <div class="product-info">
+                <div class="info-row">
+                    <span class="label">Coût :</span>
+                    <span class="value">${formatCurrency(product.price)}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="label">Revenu journalier :</span>
+                    <span class="value green">${formatCurrency(product.dailyRevenue)}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="label">Cycle :</span>
+                    <span class="value">${product.cycleDuration} jours</span>
+                </div>
+
+                <div class="info-row total">
+                    <span class="label">Revenu total :</span>
+                    <span class="value">${formatCurrency(product.totalRevenue)}</span>
+                </div>
+            </div>
+
+            <button class="btn-buy" id="btn${id}">Acheter</button>
+        `;
+
+        container.appendChild(card);
+    }
+
+    // Activer les boutons
+    for (const id in PRODUCT_CONFIG) {
+        const btn = document.getElementById(`btn${id}`);
+        if (btn) {
+            btn.addEventListener("click", () => {
+                investProduct(parseInt(id));
+            });
+        }
+    }
+}
+
+/* ================= ÉVÉNEMENTS MODAL ================= */
+document.getElementById("btnCancel").addEventListener("click", closeModal);
+document.getElementById("confirmBtn").addEventListener("click", confirmInvestment);
+
+/* ================= INIT ================= */
+renderProducts();
+
+onAuthStateChanged(auth, user => {
+    if (user) {
+        currentUser = user;
+        setupBalanceListener(user.uid);
+    } else {
+        currentUser = null;
+        currentSolde = 0;
+    }
+});
+</script>
+</body>
+</html>

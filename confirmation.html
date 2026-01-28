@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de Paiement - Top One</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: transparent;
+            border-radius: 20px;
+            box-shadow: none;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .success-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success-icon svg {
+            width: 80px;
+            height: 80px;
+            fill: #43a047;
+        }
+
+        .confirmation-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .payment-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .payment-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .payment-number {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .payment-number span {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .copy-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(67, 160, 71, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(67, 160, 71, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .note p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Loading spinner */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: white;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        /* Notification */
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+
+            .confirmation-title {
+                font-size: 20px;
+            }
+
+            .payment-number span {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>TOP ONE</h1>
+            <p>Confirmation de paiement</p>
+        </div>
+
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+        </div>
+
+        <h2 class="confirmation-title">Détails de votre recharge</h2>
+
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">Montant</span>
+                <span class="info-value" id="amount">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Numéro à recharger</span>
+                <span class="info-value" id="phone">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Opérateur</span>
+                <span class="info-value" id="operator">-</span>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h3>📱 Numéro de paiement</h3>
+            <div class="payment-number">
+                <span id="paymentNumber">-</span>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard()">
+                📋 Copier le numéro
+            </button>
+        </div>
+
+        <div class="note">
+            <p>
+                <strong>⚠️ Important :</strong><br>
+                Effectuez le paiement vers le numéro ci-dessus, puis remplissez les informations ci-dessous pour valider votre transaction.
+            </p>
+        </div>
+
+        <form id="confirmationForm">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="userPaymentNumber">Votre numéro de paiement</label>
+                    <input type="tel" id="userPaymentNumber" placeholder="Ex: 0123456789" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="transactionId">ID de transaction (optionnel)</label>
+                    <input type="text" id="transactionId" placeholder="Ex: TXN123456789">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">✅ Confirmer le paiement</button>
+        </form>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Traitement en cours...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification"></div>
+
+<script type="module">
+    /* ===============================
+       🔹 IMPORTS FIREBASE
+    =============================== */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+
+    import {
+        getAuth,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+    import {
+        getDatabase,
+        ref,
+        set,
+        push
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+    import {
+        getStorage
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-storage.js";
+
+
+    /* ===============================
+       🔹 CONFIGURATION FIREBASE
+    =============================== */
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+        authDomain: "ytc-t-19beb.firebaseapp.com",
+        databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+        projectId: "ytc-t-19beb",
+        storageBucket: "ytc-t-19beb.firebasestorage.app",
+        messagingSenderId: "1008752984173",
+        appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+    };
+
+
+    /* ===============================
+       🔹 INITIALISATION
+    =============================== */
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+
+    /* ===============================
+       🔹 FONCTIONS UTILITAIRES
+    =============================== */
+    function showLoading() {
+        const loading = document.querySelector('.loading');
+        if (loading) loading.style.display = 'flex';
+    }
+
+    function hideLoading() {
+        const loading = document.querySelector('.loading');
+        if (loading) loading.style.display = 'none';
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        if (!notification) return;
+
+        notification.textContent = message;
+        notification.style.background = type === 'success' ? '#43a047' : '#d32f2f';
+        notification.style.display = 'block';
+
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
+
+
+    /* ===============================
+       🔹 COPIE DU NUMÉRO
+    =============================== */
+    window.copyToClipboard = function () {
+        const number = document.getElementById('paymentNumber')?.textContent;
+        if (!number || number === '-') return;
+
+        navigator.clipboard.writeText(number)
+            .then(() => showNotification('✅ Numéro copié avec succès !'))
+            .catch(() => showNotification('❌ Erreur lors de la copie', 'error'));
+    };
+
+
+    /* ===============================
+       🔹 CHARGEMENT DES DONNÉES
+    =============================== */
+    window.addEventListener('load', () => {
+        const rechargeData = JSON.parse(sessionStorage.getItem('rechargeData'));
+
+        if (!rechargeData) {
+            showNotification('⚠️ Erreur de chargement des données', 'error');
+            setTimeout(() => window.location.href = 'recharge.html', 2000);
+            return;
+        }
+
+        document.getElementById('paymentNumber').textContent = rechargeData.operatorNumber || 'N/A';
+        document.getElementById('amount').textContent = rechargeData.amount || '0';
+        document.getElementById('phone').textContent = rechargeData.phone || 'N/A';
+        document.getElementById('operator').textContent = rechargeData.operator?.toUpperCase() || 'N/A';
+    });
+
+
+    /* ===============================
+       🔹 VÉRIFICATION AUTH
+    =============================== */
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            showNotification('🔒 Veuillez vous connecter pour continuer', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+        }
+    });
+
+
+    /* ===============================
+       🔹 CONFIRMATION DE PAIEMENT
+    =============================== */
+    const confirmationForm = document.getElementById('confirmationForm');
+
+    if (confirmationForm) {
+        confirmationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const user = auth.currentUser;
+            if (!user) {
+                showNotification('🔒 Veuillez vous connecter pour continuer', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const userPaymentNumber = document.getElementById('userPaymentNumber')?.value || '';
+                const transactionId = document.getElementById('transactionId')?.value || '';
+                const rechargeData = JSON.parse(sessionStorage.getItem('rechargeData')) || {};
+
+                const transactionData = {
+                    ...rechargeData,
+                    userPaymentNumber,
+                    transactionId,
+                    status: 'pending',
+                    date: new Date().toISOString(),
+                    userId: user.uid,
+                    credited: false
+                };
+
+                const transactionsRef = ref(db, 'transactions');
+                const newTransactionRef = push(transactionsRef);
+
+                await set(newTransactionRef, transactionData);
+
+                showNotification('✅ Paiement confirmé ! Redirection...', 'success');
+                sessionStorage.removeItem('rechargeData');
+
+                setTimeout(() => {
+                    window.location.href = 'historique.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error(error);
+                showNotification('❌ Erreur : ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        });
+    }
+</script>
+</body>
+</html>

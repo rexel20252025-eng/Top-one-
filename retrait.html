@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrait de Fonds</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0e27;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffbb00;
+            --error: #ff4757;
+            --bg: #ffffff;
+            --surface: #f8f9fc;
+            --text: #1a1d35;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Decorative background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a1f3d 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(10, 14, 39, 0.2);
+            animation: slideInDown 0.8s ease 0.2s backwards;
+        }
+
+        .balance-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .balance-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Withdrawal Form */
+        .withdrawal-form {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            animation: slideInUp 0.8s ease 0.4s backwards;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .info-value.highlight {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent) 0%, #0099cc 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Messages */
+        #message {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00cc6a;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .message.error {
+            background: rgba(255, 71, 87, 0.1);
+            color: #cc1f2e;
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        /* Hints */
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2.5rem;
+            }
+
+            .balance-value {
+                font-size: 2rem;
+            }
+
+            .withdrawal-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="header-title">Retrait</h1>
+            <p class="header-subtitle">Effectuez un retrait de vos fonds</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-label">Solde Disponible</div>
+            <div class="balance-value" id="current-balance">0 FCFA</div>
+        </div>
+
+        <div class="withdrawal-form">
+            <div id="message"></div>
+
+            <div class="form-group">
+                <label class="form-label" for="amount">Montant du Retrait</label>
+                <input 
+                    type="number" 
+                    id="amount" 
+                    class="form-input" 
+                    placeholder="Entrez le montant"
+                    min="1000"
+                    max="1000000"
+                >
+                <p class="hint">Minimum: 1 000 FCFA | Maximum: 1 000 000 FCFA</p>
+            </div>
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">Frais (10%)</span>
+                    <span class="info-value" id="fees">0 FCFA</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Montant à recevoir</span>
+                    <span class="info-value highlight" id="receive-amount">0 FCFA</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="withdrawalCode">Code de Retrait</label>
+                <input 
+                    type="password" 
+                    id="withdrawalCode" 
+                    class="form-input" 
+                    placeholder="Entrez votre code de retrait"
+                >
+                <p class="hint">Code de sécurité configuré dans votre profil</p>
+            </div>
+
+            <button id="withdraw-btn" class="btn-primary" disabled>
+                Confirmer le Retrait
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { 
+          getAuth, 
+          createUserWithEmailAndPassword, 
+          signInWithEmailAndPassword, 
+          onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { 
+          getDatabase, 
+          ref, 
+          set, 
+          get,
+          update,
+          push,
+          serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // 🔁 CONFIGURATION FIREBASE YTC
+        const firebaseConfig = {
+          apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+          authDomain: "ytc-t-19beb.firebaseapp.com",
+          databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+          projectId: "ytc-t-19beb",
+          storageBucket: "ytc-t-19beb.firebasestorage.app",
+          messagingSenderId: "1008752984173",
+          appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const FEE_RATE = 0.10;
+        const MIN = 1000;
+        const MAX = 1000000;
+
+        let currentUser = null;
+        let balance = 0;
+        let savedCode = "";
+        let userOperator = ""; // Opérateur de l'utilisateur
+
+        function formatFCFA(n) {
+            return n.toLocaleString("fr-FR") + " FCFA";
+        }
+
+        onAuthStateChanged(auth, async user => {
+            if (!user) return;
+            currentUser = user;
+
+            const snap = await get(ref(db, `users/${user.uid}`));
+            if (snap.exists()) {
+                const data = snap.val();
+                balance = data.balance || 0;
+                savedCode = data.withdrawalConfig?.code || "";
+                // Récupérer l'opérateur configuré par l'utilisateur
+                userOperator = data.withdrawalConfig?.operator || "";
+                
+                document.getElementById("current-balance").textContent = formatFCFA(balance);
+                checkPendingWithdrawal();
+            }
+        });
+
+        async function checkPendingWithdrawal() {
+            const snap = await get(ref(db, `users/${currentUser.uid}/withdrawalHistory`));
+            let hasPending = false;
+            if (snap.exists()) {
+                const history = snap.val();
+                hasPending = Object.values(history).some(w => (w.status || '').toLowerCase() === 'traitement bancaire');
+            }
+            if (hasPending) {
+                btn.disabled = true;
+                show("⚠️ Vous avez déjà un retrait en traitement. Attendez qu'il soit payé avant d'en lancer un autre.", true);
+            }
+        }
+
+        function updateValidation() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const code = codeInput.value;
+
+            // Calcul du montant à recevoir (montant - frais 1%)
+            const fees = Math.round(amount * FEE_RATE);
+            const receiveAmount = amount - fees;
+            
+            // Affichage des frais
+            if (amount > 0) {
+                document.getElementById("fees").textContent = formatFCFA(fees);
+                document.getElementById("receive-amount").textContent = formatFCFA(receiveAmount);
+            } else {
+                document.getElementById("fees").textContent = "0 FCFA";
+                document.getElementById("receive-amount").textContent = "0 FCFA";
+            }
+
+            if (amount < MIN || amount > MAX || amount > balance || code !== savedCode) {
+                btn.disabled = true;
+                return;
+            }
+
+            btn.disabled = false;
+        }
+
+        async function processWithdrawal() {
+            const snap = await get(ref(db, `users/${currentUser.uid}/withdrawalHistory`));
+            if (snap.exists()) {
+                const history = snap.val();
+                const hasPending = Object.values(history).some(w => (w.status || '').toLowerCase() === 'traitement bancaire');
+                if (hasPending) {
+                    show("⚠️ Vous avez déjà un retrait en traitement. Attendez qu'il soit payé avant d'en lancer un autre.", true);
+                    return;
+                }
+            }
+
+            const amount = parseFloat(amountInput.value);
+            const fees = Math.round(amount * FEE_RATE);
+            const newBalance = balance - amount;
+
+            const key = push(ref(db, `users/${currentUser.uid}/withdrawalHistory`)).key;
+
+            // AJOUT DU CHAMP OPERATOR ICI ✅
+            await update(ref(db), {
+                [`users/${currentUser.uid}/balance`]: newBalance,
+                [`users/${currentUser.uid}/withdrawalHistory/${key}`]: {
+                    amount,
+                    fees,
+                    total: amount - fees,
+                    currency: "FCFA",
+                    status: "Traitement Bancaire",
+                    operator: userOperator.toLowerCase(), // ✅ Opérateur en minuscules
+                    timestamp: serverTimestamp()
+                }
+            });
+
+            show("✅ Retrait lancé avec succès", false);
+            btn.disabled = true;
+            
+            // Redirection après 1.5 secondes
+            setTimeout(() => {
+                window.location.href = "historique-retrait.html";
+            }, 1500);
+        }
+
+        function show(msg, error = true) {
+            document.getElementById("message").innerHTML =
+                `<div class="message ${error ? "error" : "success"}">${msg}</div>`;
+        }
+
+        const amountInput = document.getElementById("amount");
+        const codeInput = document.getElementById("withdrawalCode");
+        const btn = document.getElementById("withdraw-btn");
+
+        amountInput.oninput = updateValidation;
+        codeInput.oninput = updateValidation;
+        btn.onclick = processWithdrawal;
+    </script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Transactions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0e27;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffbb00;
+            --error: #ff4757;
+            --bg: #ffffff;
+            --surface: #f8f9fc;
+            --text: #1a1d35;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Decorative background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Transactions List */
+        .transactions-wrapper {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, var(--accent), var(--success));
+            border-radius: 4px;
+        }
+
+        #historyList {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Transaction Card */
+        .history-item {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.5s ease backwards;
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .history-item:hover::before {
+            opacity: 1;
+        }
+
+        .history-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent);
+        }
+
+        .history-item:nth-child(1) { animation-delay: 0.1s; }
+        .history-item:nth-child(2) { animation-delay: 0.2s; }
+        .history-item:nth-child(3) { animation-delay: 0.3s; }
+        .history-item:nth-child(4) { animation-delay: 0.4s; }
+        .history-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .history-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-label i {
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Status Badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-success {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00cc6a;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .status-success::before {
+            background: var(--success);
+        }
+
+        .status-failed {
+            background: rgba(255, 71, 87, 0.1);
+            color: #cc1f2e;
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        .status-failed::before {
+            background: var(--error);
+        }
+
+        .status-pending {
+            background: rgba(255, 187, 0, 0.1);
+            color: #cc9500;
+            border: 1px solid rgba(255, 187, 0, 0.2);
+        }
+
+        .status-pending::before {
+            background: var(--warning);
+        }
+
+        /* No Records */
+        .no-records {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .no-records::before {
+            content: '📋';
+            display: block;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 3rem;
+            }
+
+            .transactions-wrapper {
+                padding: 24px;
+            }
+
+            .history-info {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 212, 255, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="header-title">Transactions</h1>
+        </div>
+
+        <div class="transactions-wrapper">
+            <h2 class="section-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Historique complet
+            </h2>
+            <div id="historyList">
+                <div class="no-records">
+                    <div class="loading"></div>
+                    <p style="margin-top: 20px;">Chargement des transactions...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+    import { 
+      getDatabase, 
+      ref, 
+      set, 
+      get,
+      query,
+      orderByChild,
+      equalTo,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+    // 🔁 CONFIGURATION FIREBASE YTC
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9s9vqmB5sAxZ8m4vJf6u8LrbstJZKskI",
+      authDomain: "ytc-t-19beb.firebaseapp.com",
+      databaseURL: "https://ytc-t-19beb-default-rtdb.firebaseio.com",
+      projectId: "ytc-t-19beb",
+      storageBucket: "ytc-t-19beb.firebasestorage.app",
+      messagingSenderId: "1008752984173",
+      appId: "1:1008752984173:web:559ca1cd4afc2a9ae57f64"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    function displayTransactions(transactions, userId) {
+        const historyList = document.getElementById("historyList");
+        if (!historyList) return;
+        historyList.innerHTML = "";
+
+        if (!transactions) {
+            historyList.innerHTML = "<div class='no-records'>Aucune transaction disponible</div>";
+            return;
+        }
+
+        const userTransactions = Object.values(transactions).filter(tx => tx.userId === userId);
+        
+        if (userTransactions.length === 0) {
+            historyList.innerHTML = "<div class='no-records'>Aucune transaction disponible</div>";
+            return;
+        }
+
+        userTransactions.forEach(tx => {
+            const div = document.createElement("div");
+            div.className = "history-item";
+
+            function formatDateTime(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+                       " à " +
+                       date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            function getStatusClass(status) {
+                if (status === "success") return "status-success";
+                if (status === "failed") return "status-failed";
+                return "status-pending";
+            }
+
+            function getStatusText(status) {
+                if (status === "success") return "Approuvé";
+                if (status === "failed") return "Rejeté";
+                return "En attente";
+            }
+
+            // --- Section visible ---
+            const visibleHTML = `
+                <div class="history-info">
+                    <div class="info-group">
+                        <span class="info-label"><i class="fa-solid fa-coins"></i> Montant</span>
+                        <span class="info-value">${tx.amount || 0} FCFA</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label"><i class="fa-solid fa-mobile-screen-button"></i> Numéro</span>
+                        <span class="info-value">${tx.phone || tx.userPaymentNumber || '—'}</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label"><i class="fa-solid fa-calendar-days"></i> Date & Heure</span>
+                        <span class="info-value">${tx.date ? formatDateTime(tx.date) : '—'}</span>
+                    </div>
+                </div>
+                <div class="status ${getStatusClass(tx.status)}">
+                    ${getStatusText(tx.status)}
+                </div>
+            `;
+
+            // --- Section invisible (ID transaction) ---
+            const hiddenHTML = `
+                <div class="info-group" style="display:none;">
+                    <span class="info-label">ID Transaction</span>
+                    <span class="info-value">${tx.transactionId || '—'}</span>
+                </div>
+            `;
+
+            div.innerHTML = visibleHTML + hiddenHTML;
+
+            historyList.appendChild(div);
+        });
+    }
+
+    onAuthStateChanged(auth, user => {
+        const historyList = document.getElementById("historyList");
+        if (!historyList) return;
+
+        if (!user) {
+            historyList.innerHTML = "<div class='no-records'>Veuillez vous connecter pour voir vos transactions</div>";
+            return;
+        }
+
+        const q = query(ref(db, "transactions"), orderByChild("userId"), equalTo(user.uid));
+
+        onValue(q, snap => {
+            const data = snap.val();
+            displayTransactions(data, user.uid);
+        });
+    });
+    </script>
+</body>
+</html>
